@@ -1,0 +1,246 @@
+library(readxl)
+library(tidyr)
+library(dplyr)
+
+train_33 <- read_excel("~/Downloads/train 33.xlsx", col_names = FALSE)
+
+train_separated <- separate(train_33, col = 1, 
+into = c("ID", "Gender", "Customer.Type", "Age", "Type.of.Travel", "Class", "Flight.Distance", "Inflight.Wifi.Service",
+"Departure.Arrival.Time.Convenient", "Ease.of.Online.Booking", "Gate.Location", "Food.and.Drink", "Online.Boarding", 
+"Seat.Comfort", "Inflight.Entertainment", "On.board.Service", "Leg.Room.Service", "Baggage.Handling", "Check.in.Service", 
+"Inflight.Service", "Cleanliness", "Departure.Delay.in.Minutes", "Arrival.Delay.in.Minutes", "Satisfaction"), 
+sep = ",")
+
+train_separated$ID <- NA
+
+for (i in 2:ncol(train_separated)) { train_separated[, i - 1] <- train 
+}
+
+head(train_separated)
+colnames(train_separated)
+
+View(train_separated)
+> 
+> train_separated$Age <- as.numeric(train_separated$Age)
+> train_separated$Flight.Distance <- as.numeric(train_separated$Flight.Distance)
+> train_separated$Inflight.Wifi.Service <- as.numeric(train_separated$Inflight.Wifi.Service)
+> train_separated$Departure.Arrival.Time.Convenient <- as.numeric(train_separated$Departure.Arrival.Time.Convenient)
+> train_separated$Ease.of.Online.Booking <- as.numeric(train_separated$Ease.of.Online.Booking)
+> train_separated$Gate.Location <- as.numeric(train_separated$Gate.Location)
+> train_separated$Food.and.Drink <- as.numeric(train_separated$Food.and.Drink)
+> train_separated$Online.Boarding <- as.numeric(train_separated$Online.Boarding)
+> train_separated$Seat.Comfort <- as.numeric(train_separated$Seat.Comfort)
+> train_separated$Inflight.Entertainment <- as.numeric(train_separated$Inflight.Entertainment)
+> train_separated$On.board.Service <- as.numeric(train_separated$On.board.Service)
+> train_separated$Leg.Room.Service <- as.numeric(train_separated$Leg.Room.Service)
+> train_separated$Baggage.Handling <- as.numeric(train_separated$Baggage.Handling)
+> train_separated$Check.in.Service <- as.numeric(train_separated$Check.in.Service)
+> train_separated$Inflight.Service <- as.numeric(train_separated$Inflight.Service)
+> train_separated$Cleanliness <- as.numeric(train_separated$Cleanliness)
+> train_separated$Departure.Delay.in.Minutes <- as.numeric(train_separated$Departure.Delay.in.Minutes)
+> train_separated$Arrival.Delay.in.Minutes <- as.numeric(train_separated$Arrival.Delay.in.Minutes)
+> train_separated$Gender <- as.factor(train_separated$Gender)
+> train_separated$Customer.Type <- as.factor(train_separated$Customer.Type)
+> train_separated$Type.of.Travel <- as.factor(train_separated$Type.of.Travel)
+> train_separated$Class <- as.factor(train_separated$Class)
+> head(train_separated)
+
+train_separated <- na.omit(train_separated)
+
+colSums(is.na(train_separated))
+
+
+age_outliers <- train_separated[train_separated$Age < 18 | train_separated$Age > 100,]
+
+flight_distance_outliers <- train_separated[train_separated$Flight.Distance < 12 | train_separated$Flight.Distance > 10000,]
+
+wifi_service_outliers <- train_separated[train_separated$Inflight.Wifi.Service < 0 | train_separated$Inflight.Wifi.Service > 5,]
+
+departure_delay_outliers <- train_separated[train_separated$Departure.Delay.in.Minutes < 0 | train_separated$Departure.Delay.in.Minutes > 1440,]
+
+arrival_delay_outliers <- train_separated[train_separated$Arrival.Delay.in.Minutes < 0 | train_separated$Arrival.Delay.in.Minutes > 1440,]
+
+customer_type_outliers <- train_separated[!(train_separated$Customer.Type %in% c("Loyal Customer", "disloyal Customer")),]
+
+class_outliers <- train_separated[!(train_separated$Class %in% c("Eco", "Eco Plus", "Business")),]
+
+satisfaction_outliers <- train_separated[!(train_separated$Satisfaction %in% c("satisfied", "neutral or dissatisfied")),]
+
+gender_outliers <- train_separated[!(train_separated$Gender %in% c("Male", "Female")),]
+
+type_of_travel_outliers <- train_separated[!(train_separated$Type.of.Travel %in% c("Personal Travel", "Business travel")),]
+
+departure_arrival_time_outliers <- train_separated[train_separated$Departure.Arrival.Time.Convenient < 0 | train_separated$Departure.Arrival.Time.Convenient > 5,]
+
+ease_online_booking_outliers <- train_separated[train_separated$Ease.of.Online.Booking < 0 | train_separated$Ease.of.Online.Booking > 5,]
+
+gate_location_outliers <- train_separated[train_separated$Gate.Location < 0 | train_separated$Gate.Location > 5,]
+
+food_drink_outliers <- train_separated[train_separated$Food.and.Drink < 0 | train_separated$Food.and.Drink > 5,]
+
+online_boarding_outliers <- train_separated[train_separated$Online.Boarding < 0 | train_separated$Online.Boarding > 5,]
+
+seat_comfort_outliers <- train_separated[train_separated$Seat.Comfort < 0 | train_separated$Seat.Comfort > 5,]
+
+inflight_entertainment_outliers <- train_separated[train_separated$Inflight.Entertainment < 0 | train_separated$Inflight.Entertainment > 5,]
+
+on_board_service_outliers <- train_separated[train_separated$On.board.Service < 0 | train_separated$On.board.Service > 5,]
+
+leg_room_service_outliers <- train_separated[train_separated$Leg.Room.Service < 0 | train_separated$Leg.Room.Service > 5,]
+
+baggage_handling_outliers <- train_separated[train_separated$Baggage.Handling < 0 | train_separated$Baggage.Handling > 5,]
+
+checkin_service_outliers <- train_separated[train_separated$Check.in.Service < 0 | train_separated$Check.in.Service > 5,]
+
+inflight_service_outliers <- train_separated[train_separated$Inflight.Service < 0 | train_separated$Inflight.Service > 5,]
+
+cleanliness_outliers <- train_separated[train_separated$Cleanliness < 0 | train_separated$Cleanliness > 5,]
+
+all_outliers <- rbindage_outliers,flight_distance_outliers,wifi_service_outliers, departure_delay_outliers, arrival_delay_outliers, customer_type_outliers,
+    class_outliers, satisfaction_outliers, gender_outliers, type_of_travel_outliers, departure_arrival_time_outliers, ease_online_booking_outliers,
+    gate_location_outliers,food_drink_outliers,online_boarding_outliers,seat_comfort_outliers,inflight_entertainment_outliers,on_board_service_outliers,leg_room_service_outliers,baggage_handling_outliers,
+    checkin_service_outliers, inflight_service_outliers,
+    cleanliness_outliers)
+
+
+outlier_rows <- unique(rownames(all_outliers))
+
+train_separated <- train_separated[!rownames(train_separated) %in% outlier_rows, ]
+
+
+
+summary(train_separated_sorted_1$Age)
+
+summary(train_separated_sorted_1$Flight.Distance)
+
+table(train_separated_sorted_1$Inflight.Wifi.Service)
+
+summary(train_separated_sorted_1$Departure.Arrival.Time.Convenient)
+
+summary(train_separated_sorted_1$Ease.of.Online.Booking)
+
+summary(train_separated_sorted_1$Gate.Location)
+
+summary(train_separated_sorted_1$Food.and.Drink)
+
+summary(train_separated_sorted_1$Online.Boarding)
+
+summary(train_separated_sorted_1$Seat.Comfort)
+
+summary(train_separated_sorted_1$Inflight.Entertainment)
+
+summary(train_separated_sorted_1$On.board.Service)
+
+summary(train_separated_sorted_1$Leg.Room.Service)
+
+summary(train_separated_sorted_1$Baggage.Handling)
+
+summary(train_separated_sorted_1$Check.in.Service)
+
+summary(train_separated_sorted_1$Inflight.Service)
+
+summary(train_separated_sorted_1$Cleanliness)
+
+summary(train_separated_sorted_1$Departure.Delay.in.Minutes)
+
+summary(train_separated_sorted_1$Arrival.Delay.in.Minutes)
+
+table(train_separated_sorted_1$Gender)
+
+table(train_separated_sorted_1$Customer.Type)
+
+table(train_separated_sorted_1$Type.of.Travel)
+
+table(train_separated_sorted_1$Class)
+
+table(train_separated_sorted_1$Satisfaction)
+
+train_separated_sorted_1$Inflight.Wifi.Service <- as.numeric(as.character(train_separated_sorted_1$Inflight.Wifi.Service))
+summary(train_separated_sorted_1$Inflight.Wifi.Service)
+
+
+loyal <- train_separated_sorted_1[train_separated_sorted_1$Customer.Type == "Loyal Customer",]
+disloyal <- train_separated_sorted_1[train_separated_sorted_1$Customer.Type == "disloyal Customer",]
+
+numerical_vars <- c("Age","Flight.Distance","Departure.Delay.in.Minutes","Arrival.Delay.in.Minutes","Inflight.Wifi.Service","Departure.Arrival.Time.Convenient","Ease.of.Online.Booking","Gate.Location","Food.and.Drink","Online.Boarding","Seat.Comfort","Inflight.Entertainment","On.board.Service","Leg.Room.Service","Baggage.Handling","Check.in.Service","Inflight.Service","Cleanliness")
+
+for (var in numerical_vars) {
+  loyal_var <- as.numeric(as.character(loyal[[var]]))
+  disloyal_var <- as.numeric(as.character(disloyal[[var]]))
+  test_result <- t.test(loyal_var, disloyal_var, var.equal = FALSE)
+  cat("Variable:", var, "\n")
+  print(test_result)
+  cat("\n")
+}
+
+train_clean <- na.omit(train_separated_sorted_1[, c("Customer.Type", "Gender", "Type.of.Travel", "Class", "Satisfaction")])
+train_clean$Customer.Type <- factor(trimws(train_clean$Customer.Type))
+train_clean$Gender <- factor(trimws(train_clean$Gender))
+train_clean$Type.of.Travel <- factor(trimws(train_clean$Type.of.Travel))
+train_clean$Class <- factor(trimws(train_clean$Class))
+train_clean$Satisfaction <- factor(trimws(train_clean$Satisfaction))
+
+categorical_vars <- c("Gender", "Type.of.Travel", "Class", "Satisfaction")
+
+for (var in categorical_vars) {
+  tbl <- table(train_clean$Customer.Type, train_clean[[var]])
+  if (all(chisq.test(tbl)$expected >= 5)) {
+    test_result <- chisq.test(tbl)
+  } else {
+    test_result <- fisher.test(tbl)
+  }
+  cat("Variable:", var, "\n")
+  print(test_result)
+  cat("\n")
+}
+
+> loyal <- train_separated_sorted_1[train_separated_sorted_1$Customer.Type == "Loyal Customer",]
+> disloyal <- train_separated_sorted_1[train_separated_sorted_1$Customer.Type == "disloyal Customer",]
+> train_clean <- na.omit(train_separated_sorted_1[, c("Customer.Type", "Gender", "Type.of.Travel", "Class", "Satisfaction")])
+> train_clean$Customer.Type <- factor(trimws(train_clean$Customer.Type))
+> train_clean$Gender <- factor(trimws(train_clean$Gender))
+> train_clean$Type.of.Travel <- factor(trimws(train_clean$Type.of.Travel))
+> train_clean$Class <- factor(trimws(train_clean$Class))
+> train_clean$Satisfaction <- factor(trimws(train_clean$Satisfaction))
+> categorical_vars <- c("Gender", "Type.of.Travel", "Class", "Satisfaction")
+> for (var in categorical_vars) {
++ tbl <- table(train_clean$Customer.Type, train_clean[[var]])
++ print(tbl)
++ }
+
+library(dplyr)
+
+train_separated_sorted_1$CustomerLoyalty <- ifelse(train_separated_sorted_1$Customer.Type == "Loyal Customer", 1, 0)
+train_separated_sorted_1$On.board.Service <- as.numeric(as.character(train_separated_sorted_1$On.board.Service))
+train_separated_sorted_1$Inflight.Entertainment <- as.numeric(as.character(train_separated_sorted_1$Inflight.Entertainment))
+train_separated_sorted_1$Seat.Comfort <- as.numeric(as.character(train_separated_sorted_1$Seat.Comfort))
+
+data_clean <- train_separated_sorted_1 %>%
+  select(CustomerLoyalty, On.board.Service, Inflight.Entertainment, Seat.Comfort)
+
+model <- glm(CustomerLoyalty ~ On.board.Service + Inflight.Entertainment + Seat.Comfort, data = data_clean, family = binomial)
+summary(model)
+exp(cbind(OR = coef(model), confint(model)))
+
+if (!require(car)) {
+  install.packages("car")
+}
+library(car)
+linearHypothesis(model, c("On.board.Service = Inflight.Entertainment", "On.board.Service = Seat.Comfort"))
+
+if (!require(lm.beta)) {
+  install.packages("lm.beta")
+}
+library(lm.beta)
+model_linear <- lm(CustomerLoyalty ~ On.board.Service + Inflight.Entertainment + Seat.Comfort, data = data_clean)
+model_standardized <- lm.beta(model_linear)
+summary(model_standardized)
+vif_values <- vif(model)
+print(vif_values)
+if (!require(pROC)) install.packages("pROC")
+library(pROC)
+predicted_probs <- predict(model, type = "response")
+roc_curve <- roc(data_clean$CustomerLoyalty, predicted_probs)
+plot(roc_curve, main="ROC curve")
+auc_value <- auc(roc_curve)
+print(paste("AUC =", auc_value))
